@@ -1,13 +1,14 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
-import { BookOpen, Calculator } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-interface HeroSectionProps {
-	setCurrentPage: (page: string) => void;
-}
+const HeroSection: React.FC = () => {
+	const router = useRouter();
 
-const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentPage }) => {
 	return (
 		<section className="py-16 md:py-24">
 			<div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
@@ -24,22 +25,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentPage }) => {
 
 					<div className="flex flex-col sm:flex-row gap-4">
 						<Button
-							onClick={() => setCurrentPage('reading')}
+							onClick={() => router.push('/chat')}
 							className="flex items-center space-x-2"
 							size="lg"
 						>
 							<BookOpen className="h-5 w-5 mr-1" />
-							<span>Reading Help</span>
-						</Button>
-
-						<Button
-							onClick={() => setCurrentPage('math')}
-							variant="outline"
-							className="flex items-center space-x-2 border-primary text-primary hover:bg-primary/10"
-							size="lg"
-						>
-							<Calculator className="h-5 w-5 mr-1" />
-							<span>Math Help</span>
+							<span>Get Started</span>
 						</Button>
 					</div>
 				</div>
@@ -47,7 +38,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentPage }) => {
 				<div className="relative">
 					<div className="rounded-2xl overflow-hidden shadow-xl w-full h-[400px] relative">
 						<Image
-							src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80"
+							src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80"
 							alt="Elementary students learning with AI"
 							fill
 							style={{ objectFit: 'cover' }}

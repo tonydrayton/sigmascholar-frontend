@@ -1,18 +1,19 @@
+"use client"
+
 import React from 'react';
-import { BookOpen, Calculator, Brain, Home, User, LogIn } from 'lucide-react';
+import { BookOpen, Brain, Home, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
-interface HeaderProps {
-  setCurrentPage: (page: string) => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ setCurrentPage }) => {
+const Header = () => {
+  const router = useRouter();
+  
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div
           className="flex items-center space-x-2 cursor-pointer"
-          onClick={() => setCurrentPage('home')}
+          onClick={() => router.push('/')}
         >
           <Brain className="h-8 w-8 text-primary" />
           <span className="text-2xl font-bold text-primary">Sigma Scholar</span>
@@ -20,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ setCurrentPage }) => {
 
         <nav className="hidden md:flex items-center space-x-8">
           <Button
-            onClick={() => setCurrentPage('home')}
+            onClick={() => router.push('/')}
             variant="ghost"
             className="flex items-center space-x-1 text-emerald-700"
           >
@@ -29,21 +30,12 @@ const Header: React.FC<HeaderProps> = ({ setCurrentPage }) => {
           </Button>
 
           <Button
-            onClick={() => setCurrentPage('reading')}
+            onClick={() => router.push('/chat')}
             variant="ghost"
             className="flex items-center space-x-1 text-emerald-700"
           >
             <BookOpen className="h-4 w-4 mr-1" />
-            <span>Reading</span>
-          </Button>
-
-          <Button
-            onClick={() => setCurrentPage('math')}
-            variant="ghost"
-            className="flex items-center space-x-1 text-emerald-700"
-          >
-            <Calculator className="h-4 w-4 mr-1" />
-            <span>Math</span>
+            <span>Chat</span>
           </Button>
         </nav>
 
