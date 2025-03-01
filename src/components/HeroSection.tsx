@@ -5,17 +5,35 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
+import GridPatternLinearGradient from './GridPatternLinearGradient';
+import { motion } from 'framer-motion';
 const HeroSection: React.FC = () => {
 	const router = useRouter();
 
 	return (
-		<section className="py-16 md:py-24">
-			<div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-				<div className="space-y-6">
+		<section className="">
+			<GridPatternLinearGradient />
+			<div className="container mx-auto py-4 px-4 grid md:grid-cols-2 gap-12 items-center">
+				<div className="space-y-6 drop-shadow-sm">
 					<h1 className="text-4xl md:text-5xl font-bold text-emerald-800 leading-tight">
 						AI-Powered Learning <br />
-						<span className="text-primary">For Young Minds</span>
+						<motion.span
+								initial={{ backgroundPosition: '0% 50%' }}
+								animate={{ backgroundPosition: '100% 50%' }}
+								transition={{
+									duration: 3,
+									ease: 'easeInOut',
+									repeat: Infinity,
+									repeatType: 'reverse'
+								}}
+								className="group relative font-semibold rounded-lg bg-gradient-to-r from-green-600 to-green-400 dark:from-neutral-500 dark:to-neutral-200 bg-clip-text text-transparent drop-shadow-md"
+								style={{
+									backgroundSize: '200% 100%',
+									backgroundImage: 'linear-gradient(to right, #gray500, #ffffff)',
+								}}
+							>
+								For Young Minds
+							</motion.span>
 					</h1>
 
 					<p className="text-lg text-gray-600">
@@ -47,7 +65,7 @@ const HeroSection: React.FC = () => {
 					</div>
 					<div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
 						<div className="flex items-center space-x-2">
-							<div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+							<div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
 							<p className="font-medium text-primary">AI Tutor Active</p>
 						</div>
 					</div>

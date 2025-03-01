@@ -10,11 +10,8 @@ import TestimonialSection from '@/components/TestimonialSection'
 export default function Home() {
 
   return (
-    <div className="min-h-screen flex flex-col bg-emerald-50">
+    <div className="min-h-screen flex flex-col">
       {/* Grid Background */}
-      <div className="fixed inset-0 bg-emerald-50 z-0">
-        <div className="absolute inset-0 bg-grid-emerald-500/[0.05] bg-[size:50px_50px]" />
-      </div>
 
       <main className="flex-grow z-10 relative">
         {(
