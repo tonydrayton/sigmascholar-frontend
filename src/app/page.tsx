@@ -8,7 +8,6 @@ import FeatureSection from '@/components/FeatureSection'
 import TestimonialSection from '@/components/TestimonialSection'
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState('home')
 
   return (
     <div className="min-h-screen flex flex-col bg-emerald-50">
@@ -17,12 +16,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-grid-emerald-500/[0.05] bg-[size:50px_50px]" />
       </div>
 
-      <Header setCurrentPage={setCurrentPage} />
-
       <main className="flex-grow z-10 relative">
-        {currentPage === 'home' && (
+        {(
           <>
-            <HeroSection setCurrentPage={setCurrentPage} />
+            <HeroSection />
             <FeatureSection />
             <TestimonialSection />
           </>
