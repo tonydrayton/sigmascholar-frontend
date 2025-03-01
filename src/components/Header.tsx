@@ -14,8 +14,8 @@ const Header: React.FC<HeaderProps> = ({ setCurrentPage }) => {
           className="flex items-center space-x-2 cursor-pointer"
           onClick={() => setCurrentPage('home')}
         >
-          <Brain className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold text-primary">Sigma Scholar</span>
+          <Brain className="h-8 w-8 text-emerald-400" />
+          <span className="text-2xl font-bold text-green-600">Sigma Scholar</span>
         </div>
 
         <nav className="hidden md:flex items-center space-x-8">
