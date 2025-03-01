@@ -26,7 +26,7 @@ const HeroSection: React.FC = () => {
 									repeat: Infinity,
 									repeatType: 'reverse'
 								}}
-								className="group relative font-semibold rounded-lg bg-gradient-to-r from-green-600 to-green-400 dark:from-neutral-500 dark:to-neutral-200 bg-clip-text text-transparent drop-shadow-md"
+								className="group relative font-semibold rounded-lg bg-gradient-to-r from-green-600 to-green-500 dark:from-neutral-500 dark:to-neutral-200 bg-clip-text text-transparent"
 								style={{
 									backgroundSize: '200% 100%',
 									backgroundImage: 'linear-gradient(to right, #gray500, #ffffff)',
@@ -53,17 +53,17 @@ const HeroSection: React.FC = () => {
 					</div>
 				</div>
 
-				<div className="relative">
+				<div className="relative py-10">
 					<div className="rounded-2xl overflow-hidden shadow-xl w-full h-[400px] relative">
 						<Image
-							src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80"
+							src="https://images.unsplash.com/photo-1588072432836-e10032774350?q=80&w=3544&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 							alt="Elementary students learning with AI"
 							fill
 							style={{ objectFit: 'cover' }}
 							priority
 						/>
 					</div>
-					<div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
+					<div className="absolute -bottom-1 -left-6 bg-white p-4 rounded-lg shadow-lg border">
 						<div className="flex items-center space-x-2">
 							<div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
 							<p className="font-medium text-primary">AI Tutor Active</p>

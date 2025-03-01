@@ -1,42 +1,78 @@
 import React from 'react';
-import { BookOpen, Calculator, Brain, Clock, Award, Sparkles } from 'lucide-react';
+import { BookOpen, Calculator, Brain, Award } from 'lucide-react';
+import { BentoGrid, BentoCard } from '@/components/magicui/bento-grid';
+import Image from 'next/image';
 
 const features = [
   {
-    icon: <BookOpen className="h-8 w-8 text-primary" />,
-    title: "Reading Comprehension",
-    description: "Interactive stories and exercises that improve vocabulary, comprehension, and critical thinking skills."
+    Icon: BookOpen,
+    name: "Reading Comprehension",
+    description: "Interactive stories and exercises that improve vocabulary, comprehension, and critical thinking skills.",
+    href: "#reading",
+    cta: "Learn more",
+    className: "col-span-3 lg:col-span-2",
+    background: (
+      <Image
+      src="https://images.unsplash.com/photo-1541854615901-93c354197834?q=80&w=3273&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt='book'
+      fill
+      className='[mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] pointer-events-none'
+      />
+    ),
   },
   {
-    icon: <Calculator className="h-8 w-8 text-primary" />,
-    title: "Math Problem Solving",
-    description: "Step-by-step guidance through math problems with visual aids and real-world examples."
+    Icon: Calculator,
+    name: "Math Problem Solving",
+    description: "Step-by-step guidance through math problems with visual aids and real-world examples.",
+    href: "#math",
+    cta: "Learn more",
+    className: "col-span-3 lg:col-span-1",
+    background: (
+      <Image
+      src='https://images.unsplash.com/photo-1596495577886-d920f1fb7238?q=80&w=3274&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+      alt='math'
+      fill
+      className='[mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] object-cover pointer-events-none'
+      />
+    ),
   },
   {
-    icon: <Brain className="h-8 w-8 text-primary" />,
-    title: "Adaptive Learning",
-    description: "Our AI adjusts difficulty based on each student's progress, ensuring the perfect learning challenge."
+    Icon: Brain,
+    name: "Adaptive Learning",
+    description: "Our AI adjusts difficulty based on each student's progress, ensuring the perfect learning challenge.",
+    href: "#adaptive",
+    cta: "Learn more",
+    className: "col-span-3 lg:col-span-1",
+    background: (
+      <Image
+      src='https://plus.unsplash.com/premium_photo-1663090073232-a7e475ef1f38?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bGVhcm5pbmd8ZW58MHx8MHx8fDA%3D'
+      alt='math'
+      fill
+      className='[mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] object-cover object-[10%_10%] pointer-events-none'
+      />
+    ),
   },
   {
-    icon: <Clock className="h-8 w-8 text-primary" />,
-    title: "Instant Feedback",
-    description: "Get immediate, helpful feedback on answers to reinforce learning and correct misconceptions."
+    Icon: Award,
+    name: "Achievement System",
+    description: "Earn badges and rewards that celebrate progress and motivate continued learning.",
+    href: "#achievements",
+    cta: "Learn more",
+    className: "col-span-3 lg:col-span-2",
+    background: (
+      <Image
+      src='https://plus.unsplash.com/premium_photo-1713102867032-9f7ddbbca7da?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1pbi1zYW1lLXNlcmllc3wzfHx8ZW58MHx8fHx8'
+      alt='math'
+      fill
+      className='[mask-image:linear-gradient(to_top,transparent_20%,#000_100%)] object-cover object-[10%_10%] pointer-events-none'
+      />
+    ),
   },
-  {
-    icon: <Award className="h-8 w-8 text-primary" />,
-    title: "Achievement System",
-    description: "Earn badges and rewards that celebrate progress and motivate continued learning."
-  },
-  {
-    icon: <Sparkles className="h-8 w-8 text-primary" />,
-    title: "Engaging Exercises",
-    description: "Fun, interactive activities that make learning enjoyable and keep students motivated."
-  }
 ];
 
 const FeatureSection: React.FC = () => {
   return (
-    <section className="py-16 bg-white/80">
+    <section className="py-16 lg:px-40 bg-white/80">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-emerald-800 mb-4">How Sigma Scholar Helps Students Excel</h2>
@@ -46,17 +82,11 @@ const FeatureSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-emerald-100">
-              <div className="mb-4 bg-secondary w-16 h-16 rounded-full flex items-center justify-center">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-semibold text-emerald-700 mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
+        <BentoGrid className="auto-rows-[20rem]">
+          {features.map((feature, idx) => (
+            <BentoCard key={idx} {...feature} />
           ))}
-        </div>
+        </BentoGrid>
       </div>
     </section>
   );
