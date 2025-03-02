@@ -14,6 +14,10 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Navbar height (adjust based on your actual navbar height)
+  const navbarHeight = 64; // Example: 64px
+  const chatHeight = `calc(100vh - ${navbarHeight}px)`;
+
   useEffect(() => {
     const clearChats = async () => {
       setIsLoading(true);
@@ -293,29 +297,20 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <h1 className="text-4xl font-bold text-emerald-800 mb-4">
-        Welcome to Chat
-      </h1>
-      <p className="text-lg text-gray-600 mb-6">
-        Start your AI-powered learning journey here!
-      </p>
-
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-800 rounded-md text-sm">
-            {error}
-          </div>
-        )}
-
-        <div className="h-64 border border-gray-300 rounded-md p-4 overflow-y-auto mb-4">
-          {messages.length === 0 && !isLoading && (
-            <p className="text-gray-500">
-              Chat messages will appear here...
+    <div
+      className="flex flex-col bg-emerald-50 p-4 mx-auto"
+      style={{ height: chatHeight, maxWidth: '42rem' }}
+    >
+      {/* Chat Messages */}
+      <div className="flex-grow overflow-y-auto p-4">
+        {messages.length === 0 && !isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500 text-center">
+              Start chatting with the AI to begin your conversation!
             </p>
-          )}
-
-          {messages.map((msg, index) => (
+          </div>
+        ) : (
+          messages.map((msg, index) => (
             <div
               key={index}
               className={`mb-3 ${
@@ -343,16 +338,20 @@ export default function ChatPage() {
                 )}
               </div>
             </div>
-          ))}
-
-          {isLoading && (
-            <div className="flex justify-center my-2">
-              <Spinner />
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+          ))
+        )}
+  
+        {isLoading && (
+          <div className="flex justify-center my-2">
+            <Spinner />
+          </div>
+        )}
+      </div>
+  
+      {/* Input Area */}
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex items-center">
+          {/* Hidden file input */}
           <input
             type="file"
             accept="image/*"
@@ -361,38 +360,39 @@ export default function ChatPage() {
             onChange={handleImageUpload}
             disabled={isLoading}
           />
-
+  
           <label
             htmlFor="fileInput"
-            className={`p-3 cursor-pointer flex items-center justify-center ${
+            className={`p-2 cursor-pointer flex items-center justify-center ${
               isLoading
                 ? 'bg-gray-200 cursor-not-allowed'
                 : 'bg-gray-100 hover:bg-gray-200'
-            }`}
+            } rounded-full mr-2`}
           >
-            <ImageIcon className="h-6 w-6 text-gray-600" />
+            <ImageIcon className="h-5 w-5 text-gray-600" />
           </label>
-
+  
           <input
             type="text"
             placeholder="Type your message..."
-            className="flex-grow p-3 focus:outline-none"
+            className="flex-grow p-3 rounded-full border border-gray-300 focus:outline-none focus:border-emerald-500"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isLoading}
+            autoFocus
           />
-
+  
           <button
             onClick={sendMessage}
-            className={`p-3 flex items-center justify-center ${
+            className={`p-3 ml-2 flex items-center justify-center ${
               isLoading || input.trim() === ''
                 ? 'bg-emerald-400 cursor-not-allowed'
                 : 'bg-emerald-600 hover:bg-emerald-700'
-            } text-white`}
+            } text-white rounded-full`}
             disabled={isLoading || input.trim() === ''}
           >
-            <Send className="h-6 w-6" />
+            <Send className="h-5 w-5" />
           </button>
         </div>
       </div>
