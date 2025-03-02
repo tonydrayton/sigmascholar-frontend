@@ -4,7 +4,6 @@ import supabase from '@/utils/supabaseClient';
 // DELETE endpoint to clear all chats
 export async function DELETE() {
   try {
-    // Step 1: List all files in the `chat-images` bucket
     const { data: fileList, error: listError } = await supabase.storage
       .from('chat-images')
       .list();
@@ -17,9 +16,8 @@ export async function DELETE() {
       );
     }
 
-    // Step 2: Delete each file in the `chat-images` bucket
     if (fileList && fileList.length > 0) {
-      const filesToDelete = fileList.map((file) => `chat-images/${file.name}`);
+      const filesToDelete = fileList.map((file) => `${file.name}`);
       const { error: deleteError } = await supabase.storage
         .from('chat-images')
         .remove(filesToDelete);
@@ -37,11 +35,10 @@ export async function DELETE() {
       console.log('No files found in chat-images bucket');
     }
 
-    // Step 3: Delete all rows in the `chats` table
     const { error: deleteChatsError } = await supabase
       .from('chats')
       .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all rows
+      .neq('id', '00000000-0000-0000-0000-000000000000');
 
     if (deleteChatsError) {
       console.error('Error clearing chats:', deleteChatsError);
