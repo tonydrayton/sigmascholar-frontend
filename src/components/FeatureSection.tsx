@@ -5,7 +5,6 @@ import Image from 'next/image';
 
 const features = [
   {
-    Icon: BookOpen,
     name: "Reading Comprehension",
     description: "Interactive stories and exercises that improve vocabulary, comprehension, and critical thinking skills.",
     href: "#reading",
@@ -21,7 +20,6 @@ const features = [
     ),
   },
   {
-    Icon: Calculator,
     name: "Math Problem Solving",
     description: "Step-by-step guidance through math problems with visual aids and real-world examples.",
     href: "#math",
@@ -37,7 +35,6 @@ const features = [
     ),
   },
   {
-    Icon: Brain,
     name: "Adaptive Learning",
     description: "Our AI adjusts difficulty based on each student's progress, ensuring the perfect learning challenge.",
     href: "#adaptive",
@@ -53,7 +50,6 @@ const features = [
     ),
   },
   {
-    Icon: Award,
     name: "Achievement System",
     description: "Earn badges and rewards that celebrate progress and motivate continued learning.",
     href: "#achievements",

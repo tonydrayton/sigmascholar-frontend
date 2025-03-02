@@ -59,6 +59,7 @@ module.exports = {
 			animation: {
 				marquee: "marquee var(--duration) linear infinite",
 				"marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+				"blink": "blink 1s step-end infinite",
 			},
 			keyframes: {
 				marquee: {
@@ -83,8 +84,13 @@ module.exports = {
 						transform: 'translateY(calc(-100% - var(--gap)))'
 					}
 				},
+				blink: {
+					'0%': { opacity: '1' },
+					'50%': { opacity: '0' },
+					'100%': { opacity: '1' },
+				},
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate')],
+	plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 }

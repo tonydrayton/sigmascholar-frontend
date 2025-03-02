@@ -5,10 +5,11 @@ import Image from 'next/image';
 import { Send, Image as ImageIcon } from 'lucide-react';
 import supabase from '@/utils/supabaseClient';
 import { Spinner } from '@/components/Spinner';
+import ReactMarkdown from 'react-markdown';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<
-    { text?: string; image?: string; isUser?: boolean }[]
+    { text?: string; image?: string; isUser?: boolean; isStreaming?: boolean }[]
   >([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -223,7 +224,7 @@ export default function ChatPage() {
       console.log('OCR extracted text:', extractedText);
 
       if (extractedText.trim()) {
- 
+
         // Send the OCR extracted text to the AI
         const aiResponse = await fetch('/api/chat', {
           method: 'POST',
@@ -319,7 +320,15 @@ export default function ChatPage() {
                     : 'bg-gray-100 text-gray-800'
                 }`}
               >
-                {msg.text && <p>{msg.text}</p>}
+                {msg.text && msg.isUser && <p>{msg.text}</p>}
+                {msg.text && !msg.isUser && (
+                  <div className="prose prose-sm max-w-none prose-emerald prose-headings:font-semibold prose-headings:text-emerald-700 prose-p:text-gray-800 prose-a:text-emerald-600 prose-code:bg-gray-200 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-800 prose-pre:text-gray-100">
+                    <ReactMarkdown>
+                      {msg.text}
+                    </ReactMarkdown>
+                    {msg.isStreaming && <span className="animate-blink">▌</span>}
+                  </div>
+                )}
                 {msg.image && (
                   <div className="mt-2">
                     <Image
@@ -335,14 +344,14 @@ export default function ChatPage() {
             </div>
           ))
         )}
-  
+
         {isLoading && (
           <div className="flex justify-center my-2">
             <Spinner />
           </div>
         )}
       </div>
-  
+
       {/* Input Area */}
       <div className="p-4 border-t border-gray-200">
         <div className="flex items-center">
@@ -355,7 +364,7 @@ export default function ChatPage() {
             onChange={handleImageUpload}
             disabled={isLoading}
           />
-  
+
           <label
             htmlFor="fileInput"
             className={`p-2 cursor-pointer flex items-center justify-center ${
@@ -366,7 +375,7 @@ export default function ChatPage() {
           >
             <ImageIcon className="h-5 w-5 text-gray-600" />
           </label>
-  
+
           <input
             type="text"
             placeholder="Type your message..."
@@ -377,7 +386,7 @@ export default function ChatPage() {
             disabled={isLoading}
             autoFocus
           />
-  
+
           <button
             onClick={sendMessage}
             className={`p-3 ml-2 flex items-center justify-center ${
