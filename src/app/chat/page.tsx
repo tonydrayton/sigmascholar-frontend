@@ -226,33 +226,37 @@ export default function ChatPage() {
 				)}
 
 				<div className="h-64 border border-gray-300 rounded-md p-4 overflow-y-auto mb-4">
-					{isLoading && messages.length === 0 ? (
-						<Spinner />
-					) : messages.length === 0 ? (
+					{messages.length === 0 && !isLoading && (
 						<p className="text-gray-500">Chat messages will appear here...</p>
-					) : (
-						messages.map((msg, index) => (
-							<div key={index} className={`mb-3 ${msg.isUser ? 'text-right' : 'text-left'}`}>
-								<div className={`inline-block rounded-lg p-3 max-w-[80%] ${
-									msg.isUser
-										? 'bg-emerald-100 text-emerald-800'
-										: 'bg-gray-100 text-gray-800'
-								}`}>
-									{msg.text && <p>{msg.text}</p>}
-									{msg.image && (
-										<div className="mt-2">
-											<Image
-												src={msg.image}
-												alt="Uploaded"
-												width={200}
-												height={200}
-												className="rounded"
-											/>
-										</div>
-									)}
-								</div>
+					)}
+
+					{messages.map((msg, index) => (
+						<div key={index} className={`mb-3 ${msg.isUser ? 'text-right' : 'text-left'}`}>
+							<div className={`inline-block rounded-lg p-3 max-w-[80%] ${
+								msg.isUser
+									? 'bg-emerald-100 text-emerald-800'
+									: 'bg-gray-100 text-gray-800'
+							}`}>
+								{msg.text && <p>{msg.text}</p>}
+								{msg.image && (
+									<div className="mt-2">
+										<Image
+											src={msg.image}
+											alt="Uploaded"
+											width={200}
+											height={200}
+											className="rounded"
+										/>
+									</div>
+								)}
 							</div>
-						))
+						</div>
+					))}
+					{/* Display spinner if waiting for AI response */}
+					{isLoading && (
+						<div className="flex justify-center my-2">
+							<Spinner />
+						</div>
 					)}
 				</div>
 
