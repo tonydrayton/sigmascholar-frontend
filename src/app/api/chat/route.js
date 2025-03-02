@@ -19,8 +19,16 @@ export async function POST(request) {
       top_p: 0.95,
     });
 
+    // Ensure the returned output is a string.
+    let outputText = result.data;
+    if (Array.isArray(outputText)) {
+      outputText = outputText.join(" ");
+    } else if (typeof outputText !== "string") {
+      outputText = String(outputText);
+    }
+
     // Return the chatbot's reply using the key "generated_text"
-    return NextResponse.json({ generated_text: result.data });
+    return NextResponse.json({ generated_text: outputText });
   } catch (error) {
     console.error("Error processing chat request:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
