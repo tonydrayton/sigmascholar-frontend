@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { Brain, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import Image from 'next/image';
 
 const Footer: React.FC = () => {
   return (
@@ -9,7 +10,13 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <Brain className="h-8 w-8 text-emerald-300" />
+              <Image
+              src="/logo.png"
+              alt="cat logo"
+              width={50}
+              height={50}
+              priority
+              />
               <span className="text-2xl font-bold text-white">Sigma Scholar</span>
             </div>
             <p className="text-emerald-100 mb-4">
