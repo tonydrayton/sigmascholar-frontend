@@ -5,26 +5,42 @@ import Image from 'next/image';
 import { Send, Image as ImageIcon } from 'lucide-react';
 
 export default function ChatPage() {
-	const [messages, setMessages] = useState<{ text?: string; image?: string }[]>([]);
-	const [input, setInput] = useState('');
+  const [messages, setMessages] = useState<{ text?: string; image?: string }[]>([]);
+  const [input, setInput] = useState('');
+  async function sendMessage() {
+	try {
+	  const res = await fetch('/api/chat', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+		  message: input,
+		  system_message: "You are a friendly Chatbot.",
+		  max_tokens: 512,
+		  temperature: 0.7,
+		  top_p: 0.95,
+		}),
+	  });
+	  const data = await res.json();
+	  console.log(data);
+	  if (data.generated_text) {
+		setMessages((prev) => [...prev, { text: data.generated_text }]);
+	  }
+	} catch (error) {
+	  console.error("Error fetching model response:", error);
+	}
+  }
 
-	const sendMessage = () => {
-		if (input.trim() !== '') {
-			setMessages([...messages, { text: input }]);
-			setInput('');
-		}
-	};
-
-	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = () => {
-				setMessages([...messages, { image: reader.result as string }]);
-			};
-			reader.readAsDataURL(file);
-		}
-	};
+  
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setMessages([...messages, { image: reader.result as string }]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
 	return (
 		<div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
