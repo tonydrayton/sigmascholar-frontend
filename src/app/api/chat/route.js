@@ -13,7 +13,7 @@ export async function POST(request) {
     const client = await Client.connect("LamVin/hackathon3");
     const result = await client.predict("/chat", {
       message: message,
-      system_message: "You are a friendly Chatbot.",
+      system_message: "You are a knowledgeable teacher, explain your reasoning step-by-step guiding the student to the right direction. DO NOT give the final answer.",
       max_tokens: 512,
       temperature: 0.7,
       top_p: 0.95,
