@@ -6,6 +6,58 @@ import { Send, Image as ImageIcon } from 'lucide-react';
 import supabase from '@/utils/supabaseClient';
 import { Spinner } from '@/components/Spinner';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+// Custom component to handle markdown rendering with proper line breaks
+const MarkdownRenderer = ({ content }: { content: string }) => {
+  // Process the content to ensure proper line breaks
+  // In Markdown, adding two spaces at the end of a line creates a line break
+  const processedContent = content
+    .split('\n')
+    .map((line, i, arr) => {
+      // Skip processing if the line is part of a code block (starts with ```),
+      // or is a list item (starts with - or *), or is a heading (starts with #)
+      if (
+        line.trim().startsWith('```') ||
+        line.trim().startsWith('-') ||
+        line.trim().startsWith('*') ||
+        line.trim().startsWith('#') ||
+        line.trim().startsWith('1.') ||
+        line.trim().startsWith('>')
+      ) {
+        return line;
+      }
+
+      // If it's the last line, don't add trailing spaces
+      if (i === arr.length - 1) return line;
+
+      // Otherwise add two spaces at the end for a line break
+      return line.endsWith('  ') ? line : line + '  ';
+    })
+    .join('\n');
+
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        // Add special handling for lists to preserve spacing
+        ul: ({...props}) => <ul className="space-y-1" {...props} />,
+        ol: ({...props}) => <ol className="space-y-1" {...props} />,
+        li: ({...props}) => <li className="my-1" {...props} />,
+        // Ensure code blocks preserve formatting
+        pre: ({...props}) => <pre className="overflow-auto p-2 my-2" {...props} />,
+        code: ({className, children, ...props}: {className?: string, children: React.ReactNode}) =>
+          className ?
+            <code className={`${className} px-1 py-0.5 bg-gray-200 rounded`} {...props}>{children}</code> :
+            <code className="px-1 py-0.5 bg-gray-200 rounded" {...props}>{children}</code>,
+        // Ensure paragraphs have proper spacing
+        p: ({...props}) => <p className="my-2 whitespace-pre-line" {...props} />
+      }}
+    >
+      {processedContent}
+    </ReactMarkdown>
+  );
+};
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<
@@ -299,6 +351,12 @@ export default function ChatPage() {
     >
       {/* Chat Messages */}
       <div className="flex-grow overflow-y-auto p-4">
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-800 rounded-md text-sm">
+            {error}
+          </div>
+        )}
+
         {messages.length === 0 && !isLoading ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500 text-center">
@@ -322,11 +380,11 @@ export default function ChatPage() {
               >
                 {msg.text && msg.isUser && <p>{msg.text}</p>}
                 {msg.text && !msg.isUser && (
-                  <div className="prose prose-sm max-w-none prose-emerald prose-headings:font-semibold prose-headings:text-emerald-700 prose-p:text-gray-800 prose-a:text-emerald-600 prose-code:bg-gray-200 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-gray-800 prose-pre:text-gray-100">
-                    <ReactMarkdown>
-                      {msg.text}
-                    </ReactMarkdown>
-                    {msg.isStreaming && <span className="animate-blink">▌</span>}
+                  <div className="prose prose-sm max-w-none prose-emerald prose-headings:font-semibold prose-headings:text-emerald-700 prose-p:text-gray-800 prose-a:text-emerald-600 prose-pre:bg-gray-800 prose-pre:text-gray-100">
+                    <div className="whitespace-pre-wrap break-words">
+                      <MarkdownRenderer content={msg.text} />
+                    </div>
+                    {msg.isStreaming && <span className="animate-blink inline-block ml-1">▌</span>}
                   </div>
                 )}
                 {msg.image && (
