@@ -30,7 +30,7 @@ export default function ChatPage() {
                     console.error('Error clearing chats:', data.error);
                     setError(`Failed to clear chat history: ${data.error}`);
                 } else {
-                    console.log("Successfully cleared chat history");
+                    console.log("Successfully cleared chat and file history");
                     setMessages([]);
                 }
             } catch (err) {
@@ -83,46 +83,48 @@ export default function ChatPage() {
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
-
+    
         setIsLoading(true);
         setError(null);
-
+    
         try {
             // Create a unique filename to prevent collisions
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-            const filePath = `images/${fileName}`;
-
+            const filePath = `${fileName}`;
+    
             console.log("Uploading image:", filePath);
-
-            // Upload image to Supabase Storage (still need to do this client-side)
+    
+            // Upload image to Supabase Storage
             const { error: uploadError } = await supabase.storage
-                .from('chat-images') // Your Supabase Storage bucket
+                .from('chat-images')
                 .upload(filePath, file);
-
+    
             if (uploadError) {
                 console.error('Error uploading image:', uploadError);
                 setError(`Failed to upload image: ${uploadError.message}`);
                 return;
             }
-
+    
+            console.log("Image uploaded successfully to Supabase Storage");
+    
             // Get the public URL of the uploaded image
             const { data: urlData } = supabase.storage
                 .from('chat-images')
                 .getPublicUrl(filePath);
-
+    
             if (!urlData || !urlData.publicUrl) {
                 console.error('Failed to get public URL for uploaded image');
                 setError('Failed to get public URL for uploaded image');
                 return;
             }
-
+    
             console.log("Image URL:", urlData.publicUrl);
-
+    
             // Optimistically update UI
             const newMessage = { image: urlData.publicUrl };
             setMessages(prev => [...prev, newMessage]);
-
+    
             // Save image URL via API route
             const response = await fetch('/api/chats', {
                 method: 'POST',
@@ -131,9 +133,9 @@ export default function ChatPage() {
                 },
                 body: JSON.stringify({ image_url: urlData.publicUrl }),
             });
-
+    
             const data = await response.json();
-
+    
             if (!response.ok) {
                 console.error('Error saving image URL:', data.error);
                 setError(`Failed to save image: ${data.error}`);
@@ -145,6 +147,7 @@ export default function ChatPage() {
             setError(`Unexpected error: ${err instanceof Error ? err.message : String(err)}`);
         } finally {
             setIsLoading(false);
+            event.target.value = ''; // Clear the file input
         }
     };
 
