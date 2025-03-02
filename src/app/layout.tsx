@@ -21,9 +21,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 				{/* Main Content */}
 				<main className="flex-grow">{children}</main>
-
-				{/* Persistent Footer */}
-				<Footer />
 			</body>
 		</html>
 	);
