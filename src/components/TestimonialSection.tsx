@@ -42,7 +42,7 @@ const TestimonialSection: React.FC = () => {
 						<div key={index} className="bg-white p-6 rounded-xl shadow-md border border-emerald-100">
 							<div className="flex items-center mb-4">
 								<Avatar className="h-12 w-12 mr-4">
-									<AvatarImage src={testimonial.image} alt={testimonial.name} />
+									<AvatarImage src={testimonial.image} alt={testimonial.name} className='object-cover' />
 									<AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
 								</Avatar>
 								<div>
