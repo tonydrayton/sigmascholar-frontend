@@ -223,12 +223,7 @@ export default function ChatPage() {
       console.log('OCR extracted text:', extractedText);
 
       if (extractedText.trim()) {
-        const ocrMessage = {
-          text: `Extracted Text: ${extractedText}`,
-          isUser: true,
-        };
-        setMessages((prev) => [...prev, ocrMessage]);
-
+ 
         // Send the OCR extracted text to the AI
         const aiResponse = await fetch('/api/chat', {
           method: 'POST',
