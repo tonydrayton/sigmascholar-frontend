@@ -74,7 +74,7 @@ export async function POST(request: Request) {
 
       // Prepare the data to insert
       const chatData = {
-          role: 'user',
+          role: body.role || 'user', // Default to 'user' if not specified
           message_text: body.message_text || null,
           image_url: body.image_url || null,
       };
