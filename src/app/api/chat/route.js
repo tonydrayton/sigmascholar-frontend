@@ -10,7 +10,7 @@ export async function POST(request) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    const client = await Client.connect("LamVin/hackathon3");
+    const client = await Client.connect("LamVin/Hackathon4");
     const result = await client.predict("/chat", {
       message: message,
       system_message: "You are a knowledgeable teacher, explain your reasoning step-by-step guiding the student to the right direction. DO NOT give the final answer.",
