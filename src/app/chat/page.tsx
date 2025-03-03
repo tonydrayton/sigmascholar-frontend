@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Send, Image as ImageIcon } from 'lucide-react';
 import supabase from '@/utils/supabaseClient';
-import { Spinner } from '@/components/Spinner';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { TextShimmer } from '@/components/ui/text-shimmer';
+import { Components } from 'react-markdown';
 
 // Custom component to handle markdown rendering with proper line breaks
 const MarkdownRenderer = ({ content }: { content: string }) => {
@@ -36,23 +37,25 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
     })
     .join('\n');
 
+  const components: Components = {
+    // Add special handling for lists to preserve spacing
+    ul: ({...props}) => <ul className="space-y-1" {...props} />,
+    ol: ({...props}) => <ol className="space-y-1" {...props} />,
+    li: ({...props}) => <li className="my-1" {...props} />,
+    // Ensure code blocks preserve formatting
+    pre: ({...props}) => <pre className="overflow-auto p-2 my-2" {...props} />,
+    code: ({className, children, ...props}) =>
+      className ?
+        <code className={`${className} px-1 py-0.5 bg-gray-200 rounded`} {...props}>{children}</code> :
+        <code className="px-1 py-0.5 bg-gray-200 rounded" {...props}>{children}</code>,
+    // Ensure paragraphs have proper spacing
+    p: ({...props}) => <p className="my-2 whitespace-pre-line" {...props} />
+  };
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      components={{
-        // Add special handling for lists to preserve spacing
-        ul: ({...props}) => <ul className="space-y-1" {...props} />,
-        ol: ({...props}) => <ol className="space-y-1" {...props} />,
-        li: ({...props}) => <li className="my-1" {...props} />,
-        // Ensure code blocks preserve formatting
-        pre: ({...props}) => <pre className="overflow-auto p-2 my-2" {...props} />,
-        code: ({className, children, ...props}: {className?: string, children: React.ReactNode}) =>
-          className ?
-            <code className={`${className} px-1 py-0.5 bg-gray-200 rounded`} {...props}>{children}</code> :
-            <code className="px-1 py-0.5 bg-gray-200 rounded" {...props}>{children}</code>,
-        // Ensure paragraphs have proper spacing
-        p: ({...props}) => <p className="my-2 whitespace-pre-line" {...props} />
-      }}
+      components={components}
     >
       {processedContent}
     </ReactMarkdown>
@@ -64,16 +67,69 @@ export default function ChatPage() {
     { text?: string; image?: string; isUser?: boolean; isStreaming?: boolean }[]
   >([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDoneFetching, setIsDoneFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Navbar height (adjust based on your actual navbar height)
   const navbarHeight = 64; // Example: 64px
   const chatHeight = `calc(100vh - ${navbarHeight}px)`;
 
+  // Function to simulate streaming response
+  const simulateStreamingResponse = (fullText: string) => {
+    // Create an initial empty message with streaming flag
+    setMessages((prev) => {
+      const initialMessage = { text: '', isUser: false, isStreaming: true };
+      const newMessages = [...prev, initialMessage];
+      const messageIndex = newMessages.length - 1;
+
+      // Split the text into characters for streaming
+      const characters = fullText.split('');
+      let currentText = '';
+
+      // Stream each character with a delay
+      characters.forEach((char, index) => {
+        setTimeout(() => {
+          currentText += char;
+
+          // Update the message with the current text
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages];
+            if (updatedMessages[messageIndex]) {
+              updatedMessages[messageIndex] = {
+                ...updatedMessages[messageIndex],
+                text: currentText,
+                isStreaming: index < characters.length - 1
+              };
+            }
+            return updatedMessages;
+          });
+
+          // If this is the last character, save the response to Supabase
+          if (index === characters.length - 1) {
+            fetch('/api/chats', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                message_text: fullText,
+                role: 'assistant',
+              }),
+            }).catch((err) =>
+              console.error('Error saving AI response to Supabase:', err)
+            );
+          }
+        }, index * 15); // Adjust the delay (15ms) to control streaming speed
+      });
+
+      return newMessages;
+    });
+  };
+
   useEffect(() => {
     const clearChats = async () => {
-      setIsLoading(true);
+      setIsDoneFetching(true);
       setError(null);
 
       try {
@@ -166,23 +222,9 @@ export default function ChatPage() {
               .map((msg: string) => msg.split('<|im_end|>')[0].trim())
           : [outputText];
 
+        // Use streaming for each message
         splitMessages.forEach((message: string) => {
-          const aiMessage = { text: message, isUser: false };
-          setMessages((prev) => [...prev, aiMessage]);
-
-          // Save AI response to Supabase
-          fetch('/api/chats', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              message_text: message,
-              role: 'assistant',
-            }),
-          }).catch((err) =>
-            console.error('Error saving AI response to Supabase:', err)
-          );
+          simulateStreamingResponse(message);
         });
       }
     } catch (err) {
@@ -305,22 +347,10 @@ export default function ChatPage() {
                 .filter(Boolean)
                 .map((msg: string) => msg.split('<|im_end|>')[0].trim())
             : [outputText];
+
+          // Use streaming for each message from OCR
           splitMessages.forEach((message: string) => {
-            const aiMessage = { text: message, isUser: false };
-            setMessages((prev) => [...prev, aiMessage]);
-            // Save AI response
-            fetch('/api/chats', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                message_text: message,
-                role: 'assistant',
-              }),
-            }).catch((err) =>
-              console.error('Error saving AI response to Supabase:', err)
-            );
+            simulateStreamingResponse(message);
           });
         }
       }
@@ -357,7 +387,7 @@ export default function ChatPage() {
           </div>
         )}
 
-        {messages.length === 0 && !isLoading ? (
+        {messages.length === 0 && !isLoading && isDoneFetching ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500 text-center">
               Start chatting with the AI to begin your conversation!
@@ -384,7 +414,6 @@ export default function ChatPage() {
                     <div className="whitespace-pre-wrap break-words">
                       <MarkdownRenderer content={msg.text} />
                     </div>
-                    {msg.isStreaming && <span className="animate-blink inline-block ml-1">▌</span>}
                   </div>
                 )}
                 {msg.image && (
@@ -404,8 +433,15 @@ export default function ChatPage() {
         )}
 
         {isLoading && (
-          <div className="flex justify-center my-2">
-            <Spinner />
+          <div className="flex justify-center my-4">
+            <div className="bg-gray-100 text-gray-800 rounded-lg p-3">
+              <TextShimmer
+                duration={1.5}
+                className="text-lg font-medium [--base-color:theme(colors.emerald.600)] [--base-gradient-color:theme(colors.emerald.300)] dark:[--base-color:theme(colors.emerald.700)] dark:[--base-gradient-color:theme(colors.emerald.400)]"
+              >
+                Thinking...
+              </TextShimmer>
+            </div>
           </div>
         )}
       </div>
